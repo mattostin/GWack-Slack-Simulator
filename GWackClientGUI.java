@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GWackClientGUI extends JFrame {
+    // Declare your components as instance variables
     private JTextField nameField;
     private JTextField ipField;
     private JTextField portField;
@@ -16,9 +17,13 @@ public class GWackClientGUI extends JFrame {
     private GWackClientNetworking clientNetworking;
 
     public GWackClientGUI() {
+        // Set the frame title
         setTitle("GWack Client");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
+
+        // Create a custom font for the application
+        Font customFont = new Font("Arial", Font.PLAIN, 14);
 
         // Top Panel
         JPanel topPanel = new JPanel();
@@ -27,7 +32,13 @@ public class GWackClientGUI extends JFrame {
         nameField = new JTextField(15);
         ipField = new JTextField(15);
         portField = new JTextField(6);
-        disconnectButton = new JButton("Disconnect");
+        disconnectButton = new JButton("Connect");
+
+        // Apply custom font to text fields and button
+        nameField.setFont(customFont);
+        ipField.setFont(customFont);
+        portField.setFont(customFont);
+        disconnectButton.setFont(customFont);
 
         topPanel.add(new JLabel("Name:"));
         topPanel.add(nameField);
@@ -54,6 +65,11 @@ public class GWackClientGUI extends JFrame {
         JLabel composeLabel = new JLabel("Compose");
         composeArea = new JTextArea(3, 20);
         sendButton = new JButton("Send");
+
+        // Apply custom font to labels, text area, and button
+        composeLabel.setFont(customFont);
+        composeArea.setFont(customFont);
+        sendButton.setFont(customFont);
 
         composePanel.add(composeLabel, BorderLayout.NORTH);
         composePanel.add(new JScrollPane(composeArea), BorderLayout.CENTER);
@@ -107,13 +123,11 @@ public class GWackClientGUI extends JFrame {
     }
 
     public void disconnect() {
-        // todo
+        // Implement the disconnect functionality
     }
 
     public void sendMessage() {
-        String message = composeArea.getText();
-        // todo
-        composeArea.setText("");
+        // Implement the send message functionality
     }
 
     // Other methods for updating the members list and displaying messages

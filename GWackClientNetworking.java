@@ -17,7 +17,7 @@ public class GWackClientNetworking {
         try {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream));
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             out.println("SECRET");
             out.println(secret);
@@ -68,7 +68,6 @@ public class GWackClientNetworking {
             try {
                 String message;
                 while ((message = in.readLine()) != null) {
-                    gui.newMessage(message);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
