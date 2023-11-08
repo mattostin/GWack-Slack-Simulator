@@ -8,6 +8,7 @@ public class GWackClientGUI extends JFrame {
     private JTextField ipField;
     private JTextField portField;
     private JButton disconnectButton;
+    private JButton connectButton;
     private JButton sendButton;
     private JTextArea membersList;
     private JTextArea messagesArea;
@@ -21,19 +22,20 @@ public class GWackClientGUI extends JFrame {
         setSize(800, 600);
 
         Font customFont = new Font("Arial", Font.PLAIN, 14);
-        //creating the top panel with input fields
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout());
 
         nameField = new JTextField(15);
         ipField = new JTextField(15);
         portField = new JTextField(6);
-        disconnectButton = new JButton("Connect");
+        disconnectButton = new JButton("Disconnect");
+        connectButton = new JButton ("Connect");
 
         nameField.setFont(customFont);
         ipField.setFont(customFont);
         portField.setFont(customFont);
         disconnectButton.setFont(customFont);
+        connectButton.setFont(customFont);
 
         topPanel.add(new JLabel("Name:"));
         topPanel.add(nameField);
@@ -42,6 +44,7 @@ public class GWackClientGUI extends JFrame {
         topPanel.add(new JLabel("Port:"));
         topPanel.add(portField);
         topPanel.add(disconnectButton);
+        topPanel.add(connectButton);
 
         membersList = new JTextArea(15, 20);
         membersList.setEditable(false);
@@ -50,7 +53,6 @@ public class GWackClientGUI extends JFrame {
         messagesArea = new JTextArea(15, 20);
         messagesArea.setEditable(false);
         JScrollPane messagesScrollPane = new JScrollPane(messagesArea);
-        //creating a panel for composing messages
         JPanel composePanel = new JPanel();
         composePanel.setLayout(new BorderLayout());
 
@@ -88,15 +90,24 @@ public class GWackClientGUI extends JFrame {
         mainPanel.add(composePanel, BorderLayout.SOUTH);
 
         add(mainPanel);
-        //initilization of the client
         clientNetworking = new GWackClientNetworking(this);
-        //action listener
-        disconnectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                disconnect();
-            }
+
+        disconnectButton.addActionListener((e) -> {
+            topPanel.remove(connectButton);
+            topPanel.add(disconnectButton, BorderLayout.EAST);
+            topPanel.revalidate();
+            topPanel.repaint();
         });
+    
+
+        connectButton.addActionListener((e) -> {
+            topPanel.remove(connectButton);
+            topPanel.add(disconnectButton, BorderLayout.EAST);
+            topPanel.revalidate();
+            topPanel.repaint();
+        });
+    
+
 
         sendButton.addActionListener(new ActionListener() {
             @Override
@@ -126,3 +137,4 @@ public class GWackClientGUI extends JFrame {
         });
     }
 }
+
