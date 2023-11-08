@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GWackClientGUI extends JFrame {
-    // Declare your components as instance variables
     private JTextField nameField;
     private JTextField ipField;
     private JTextField portField;
@@ -17,15 +16,12 @@ public class GWackClientGUI extends JFrame {
     private GWackClientNetworking clientNetworking;
 
     public GWackClientGUI() {
-        // Set the frame title
         setTitle("GWack Client");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
 
-        // Create a custom font for the application
         Font customFont = new Font("Arial", Font.PLAIN, 14);
-
-        // Top Panel
+        //creating the top panel with input fields
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout());
 
@@ -34,7 +30,6 @@ public class GWackClientGUI extends JFrame {
         portField = new JTextField(6);
         disconnectButton = new JButton("Connect");
 
-        // Apply custom font to text fields and button
         nameField.setFont(customFont);
         ipField.setFont(customFont);
         portField.setFont(customFont);
@@ -48,17 +43,14 @@ public class GWackClientGUI extends JFrame {
         topPanel.add(portField);
         topPanel.add(disconnectButton);
 
-        // Members List Panel
         membersList = new JTextArea(15, 20);
         membersList.setEditable(false);
         JScrollPane membersScrollPane = new JScrollPane(membersList);
 
-        // Messages Panel
         messagesArea = new JTextArea(15, 20);
         messagesArea.setEditable(false);
         JScrollPane messagesScrollPane = new JScrollPane(messagesArea);
-
-        // Compose Panel
+        //creating a panel for composing messages
         JPanel composePanel = new JPanel();
         composePanel.setLayout(new BorderLayout());
 
@@ -66,7 +58,6 @@ public class GWackClientGUI extends JFrame {
         composeArea = new JTextArea(3, 20);
         sendButton = new JButton("Send");
 
-        // Apply custom font to labels, text area, and button
         composeLabel.setFont(customFont);
         composeArea.setFont(customFont);
         sendButton.setFont(customFont);
@@ -75,20 +66,17 @@ public class GWackClientGUI extends JFrame {
         composePanel.add(new JScrollPane(composeArea), BorderLayout.CENTER);
         composePanel.add(sendButton, BorderLayout.SOUTH);
 
-        // Main Panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
-        // Members Online Panel
         JPanel membersOnlinePanel = new JPanel();
         membersOnlinePanel.setLayout(new BorderLayout());
 
         membersOnlinePanel.add(new JLabel("Members Online"), BorderLayout.NORTH);
         membersOnlinePanel.add(membersScrollPane, BorderLayout.CENTER);
 
-        // Messages Panel
         JPanel messagesPanel = new JPanel();
         messagesPanel.setLayout(new BorderLayout());
 
@@ -100,10 +88,9 @@ public class GWackClientGUI extends JFrame {
         mainPanel.add(composePanel, BorderLayout.SOUTH);
 
         add(mainPanel);
-
+        //initilization of the client
         clientNetworking = new GWackClientNetworking(this);
-
-        // Handle Disconnect Button
+        //action listener
         disconnectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,7 +98,6 @@ public class GWackClientGUI extends JFrame {
             }
         });
 
-        // Handle Send Button
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,14 +109,14 @@ public class GWackClientGUI extends JFrame {
     }
 
     public void disconnect() {
-        // Implement the disconnect functionality
+        //need to complete for next part of project
     }
 
     public void sendMessage() {
-        // Implement the send message functionality
+          //need to complete for next part of project
+
     }
 
-    // Other methods for updating the members list and displaying messages
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
