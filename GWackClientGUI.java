@@ -1,20 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 public class GWackClientGUI extends JFrame {
     private JTextField nameField;
     private JTextField ipField;
     private JTextField portField;
-    private JButton disconnectButton;
     private JButton connectButton;
-    private JButton sendButton;
     private JTextArea membersList;
     private JTextArea messagesArea;
     private JTextArea composeArea;
-
     private GWackClientNetworking clientNetworking;
+
+    private boolean connected = false; 
 
     public GWackClientGUI() {
         setTitle("GWack Client");
@@ -28,13 +27,11 @@ public class GWackClientGUI extends JFrame {
         nameField = new JTextField(15);
         ipField = new JTextField(15);
         portField = new JTextField(6);
-        disconnectButton = new JButton("Disconnect");
-        connectButton = new JButton ("Connect");
+        connectButton = new JButton("Connect"); 
 
         nameField.setFont(customFont);
         ipField.setFont(customFont);
         portField.setFont(customFont);
-        disconnectButton.setFont(customFont);
         connectButton.setFont(customFont);
 
         topPanel.add(new JLabel("Name:"));
@@ -43,8 +40,7 @@ public class GWackClientGUI extends JFrame {
         topPanel.add(ipField);
         topPanel.add(new JLabel("Port:"));
         topPanel.add(portField);
-        topPanel.add(disconnectButton);
-        topPanel.add(connectButton);
+        topPanel.add(connectButton); 
 
         membersList = new JTextArea(15, 20);
         membersList.setEditable(false);
@@ -58,7 +54,7 @@ public class GWackClientGUI extends JFrame {
 
         JLabel composeLabel = new JLabel("Compose");
         composeArea = new JTextArea(3, 20);
-        sendButton = new JButton("Send");
+        JButton sendButton = new JButton("Send");
 
         composeLabel.setFont(customFont);
         composeArea.setFont(customFont);
@@ -91,41 +87,25 @@ public class GWackClientGUI extends JFrame {
 
         add(mainPanel);
         clientNetworking = new GWackClientNetworking(this);
-
-        disconnectButton.addActionListener((e) -> {
-            topPanel.remove(connectButton);
-            topPanel.add(disconnectButton, BorderLayout.EAST);
-            topPanel.revalidate();
-            topPanel.repaint();
-        });
-    
-
+        // Corrected button functionaility 
         connectButton.addActionListener((e) -> {
-            topPanel.remove(connectButton);
-            topPanel.add(disconnectButton, BorderLayout.EAST);
-            topPanel.revalidate();
-            topPanel.repaint();
-        });
-    
-
-
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendMessage();
+            if (connected) {    
+                disconnect();
+            } else {
+                connect();
             }
         });
-
         setVisible(true);
     }
-
     public void disconnect() {
-        //need to complete for next part of project
+        connectButton.setText("Connect"); 
+        connected = false; 
     }
 
-    public void sendMessage() {
-          //need to complete for next part of project
-
+    public void connect() {
+        connectButton.setText("Disconnect"); 
+        connected = true; 
+        
     }
 
 
@@ -137,4 +117,3 @@ public class GWackClientGUI extends JFrame {
         });
     }
 }
-
