@@ -1,6 +1,9 @@
 import java.io.*;
 import java.net.*;
 import java.util.List;
+
+import javax.swing.SwingUtilities;
+
 import java.util.ArrayList;
 
 public class GWackClientNetworking {
@@ -9,23 +12,20 @@ public class GWackClientNetworking {
     private BufferedReader in;
     private GWackClientGUI gui;
 
-    public GWackClientNetworking(GWackClientGUI gui) {
-        this.gui = gui;
-    }
-
-    public void connect(String host, int port, String username, String secret) {
+    public GWackClientNetworking(GWackClientGUI gui, String host, int port, String username) {
         try {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+            this.gui = gui;
+
             out.println("SECRET");
-            out.println(secret);
+            out.println("3c3c4ac618656ae32b7f3431e75f7b26b1a14a87");
             out.println("NAME");
             out.println(username);
+            out.flush();
 
-            // Handle the server response and member list updates
-            // You will need to implement this part
             new ReadingThread().start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,20 +42,11 @@ public class GWackClientNetworking {
         }
     }
 
-    public void sendMessage(String message) {
+    public void writeMessage(String message) {
         if (clientSocket != null && !clientSocket.isClosed()) {
             out.println(message);
+            out.flush();
         }
-    }
-
-    public List<String> getClientList() {
-        // Implement logic to retrieve and update the member list
-        // You will need to implement this part
-        List<String> clients = new ArrayList<>();
-        clients.add("User1");
-        clients.add("User2");
-        // Add more clients as needed
-        return clients;
     }
 
     public boolean isConnected() {
@@ -68,10 +59,28 @@ public class GWackClientNetworking {
             try {
                 String message;
                 while ((message = in.readLine()) != null) {
+                    System.out.println(message);
+                    if(message.equals("START_CLIENT_LIST")){
+                        message = in.readLine();
+                        String clients = "";
+                        while (!message.equals("END_CLIENT_LIST")) {
+                            clients += message + "\n";
+                            message = in.readLine();
+                        }
+                        gui.updateClients(clients);
+                        continue;
+                    }
+                    gui.newMessage(message);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                if(!clientSocket.isClosed()){
+                    System.out.println("Lost connection");
+                }
+            }finally{
+                disconnect();
             }
         }
+
     }
+
 }

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class GWackClientGUI extends JFrame {
@@ -11,6 +12,7 @@ public class GWackClientGUI extends JFrame {
     private JTextArea membersList;
     private JTextArea messagesArea;
     private JTextArea composeArea;
+    private static GWackClientGUI gui;
     private GWackClientNetworking clientNetworking;
 
     private boolean connected = false; 
@@ -85,8 +87,11 @@ public class GWackClientGUI extends JFrame {
         mainPanel.add(messagesPanel, BorderLayout.CENTER);
         mainPanel.add(composePanel, BorderLayout.SOUTH);
 
+        sendButton.addActionListener((e) -> {
+            sendMessage();
+        });
+
         add(mainPanel);
-        clientNetworking = new GWackClientNetworking(this);
         // Corrected button functionaility 
         connectButton.addActionListener((e) -> {
             if (connected) {    
@@ -102,17 +107,40 @@ public class GWackClientGUI extends JFrame {
         connected = false; 
     }
 
+    public void sendMessage(){
+        clientNetworking.writeMessage(composeArea.getText());
+        composeArea.setText("");
+    }
+
+    public void updateClients(String clientsList){
+        membersList.setText(clientsList);
+    }
+    
+
+    public void newMessage(String msg) {
+
+        messagesArea.append(msg + "\n");
+
+    }
+
     public void connect() {
         connectButton.setText("Disconnect"); 
+
+        clientNetworking = new GWackClientNetworking(gui,ipField.getText(), Integer.parseInt(portField.getText()), nameField.getText());
+        
         connected = true; 
         
     }
 
-
+    public void showError(String error){
+        SwingUtilities.invokeLater(() ->{
+            JOptionPane.showMessageDialog(this,error,"Error",JOptionPane.ERROR_MESSAGE);
+        });
+    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new GWackClientGUI();
+                gui = new GWackClientGUI();
             }
         });
     }
