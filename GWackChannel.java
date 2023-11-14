@@ -1,31 +1,74 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class GWackChannel {
-    private static final Map<String, GWackConnectedClient> clients = new ConcurrentHashMap<>();
+    private static final Map<String, GWackConnectedClient> clients = new HashMap<>();
     private static final String SECRET = "3c3c4ac618656ae32b7f3431e75f7b26b1a14a87";
+    private static ServerSocket serverSocket;    
+    private static GWackChannel chan;
+
+
 
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
-            System.err.println("Usage: java GWackChannel <port>");
+            System.err.println("Error: A port needed to be entered");
             System.exit(1);
         }
 
         int portNumber = Integer.parseInt(args[0]);
-        boolean listening = true;
 
-        try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
+        try {
+            chan = new GWackChannel();
+            serverSocket = new ServerSocket(portNumber);
+            chan.serve();
+        
+
+            System.out.println(Inet4Address.getLocalHost().getHostAddress());
             System.out.println("GWackChannel running on port: " + portNumber);
 
-            while (listening) {
-                new GWackConnectedClient(serverSocket.accept()).start();
-            }
+
         } catch (IOException e) {
             System.err.println("Could not listen on port " + portNumber);
             System.exit(-1);
         }
+    }
+
+    public void serve() {
+        while (true) {
+            try {
+                Socket client = serverSocket.accept();
+                GWackConnectedClient newClient = new GWackConnectedClient(client);
+                clients.put(newClient.getClientName(), newClient);
+                newClient.start();
+
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addClient() {
+
+    }
+
+    public void enqueueMessage(String message) {
+
+    }
+
+    public void dequeueAll() {
+
+    }
+
+    public static LinkedList<String> getClientList() {
+         LinkedList<String> clientListMsg = new LinkedList<String>();
+            clientListMsg.add("START_CLIENT_LIST");
+            for (String clientName : clients.keySet()) {
+                clientListMsg.add(clientName + "\n");
+            }
+            clientListMsg.add("END_CLIENT_LIST");
+
+            return clientListMsg;
     }
 
     private static class GWackConnectedClient extends Thread {
@@ -41,6 +84,16 @@ public class GWackChannel {
         public void sendMessage(String message) throws IOException {
             out.println(message);
         }
+
+        public boolean isValid() {
+            return true;
+        }
+
+        public String getClientName() {
+            return clientName;
+        }
+
+        
 
         public void run() {
             try {
@@ -92,13 +145,8 @@ public class GWackChannel {
         }
 
         private void broadcastClientList() {
-            StringBuilder clientListMsg = new StringBuilder("START_CLIENT_LIST\n");
-            for (String clientName : clients.keySet()) {
-                clientListMsg.append(clientName).append("\n");
-            }
-            clientListMsg.append("END_CLIENT_LIST");
-
-            broadcastMessage(clientListMsg.toString());
+            LinkedList<String> clients = getClientList();
+            broadcastMessage(clients.toString());
         }
     }
 }

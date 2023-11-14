@@ -2,8 +2,9 @@ import java.io.*;
 import java.net.*;
 import java.util.List;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
 import java.util.ArrayList;
 
 public class GWackClientNetworking {
@@ -28,7 +29,8 @@ public class GWackClientNetworking {
 
             new ReadingThread().start();
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(gui,"Invalid Port","ERROR",JOptionPane.ERROR_MESSAGE);
+
         }
     }
 

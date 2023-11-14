@@ -2,9 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class GWackClientGUI extends JFrame {
+
     private JTextField nameField;
     private JTextField ipField;
     private JTextField portField;
@@ -15,7 +17,7 @@ public class GWackClientGUI extends JFrame {
     private static GWackClientGUI gui;
     private GWackClientNetworking clientNetworking;
 
-    private boolean connected = false; 
+    private boolean connected = false;
 
     public GWackClientGUI() {
         setTitle("GWack Client");
@@ -29,7 +31,7 @@ public class GWackClientGUI extends JFrame {
         nameField = new JTextField(15);
         ipField = new JTextField(15);
         portField = new JTextField(6);
-        connectButton = new JButton("Connect"); 
+        connectButton = new JButton("Connect");
 
         nameField.setFont(customFont);
         ipField.setFont(customFont);
@@ -42,7 +44,7 @@ public class GWackClientGUI extends JFrame {
         topPanel.add(ipField);
         topPanel.add(new JLabel("Port:"));
         topPanel.add(portField);
-        topPanel.add(connectButton); 
+        topPanel.add(connectButton);
 
         membersList = new JTextArea(15, 20);
         membersList.setEditable(false);
@@ -91,10 +93,26 @@ public class GWackClientGUI extends JFrame {
             sendMessage();
         });
 
+        composeArea.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == '\n') {
+                    sendMessage();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
         add(mainPanel);
-        // Corrected button functionaility 
         connectButton.addActionListener((e) -> {
-            if (connected) {    
+            if (connected) {
                 disconnect();
             } else {
                 connect();
@@ -102,20 +120,21 @@ public class GWackClientGUI extends JFrame {
         });
         setVisible(true);
     }
+
     public void disconnect() {
-        connectButton.setText("Connect"); 
-        connected = false; 
+        connectButton.setText("Connect");
+        clientNetworking.disconnect();
+        connected = false;
     }
 
-    public void sendMessage(){
+    public void sendMessage() {
         clientNetworking.writeMessage(composeArea.getText());
         composeArea.setText("");
     }
 
-    public void updateClients(String clientsList){
+    public void updateClients(String clientsList) {
         membersList.setText(clientsList);
     }
-    
 
     public void newMessage(String msg) {
 
@@ -124,19 +143,26 @@ public class GWackClientGUI extends JFrame {
     }
 
     public void connect() {
-        connectButton.setText("Disconnect"); 
+        connectButton.setText("Disconnect");
+        try{
+        clientNetworking = new GWackClientNetworking(this, ipField.getText(), Integer.parseInt(portField.getText()),
+                nameField.getText());
+        }
+        catch (Exception e){
+            return;
+        }
+        connected = true;
 
-        clientNetworking = new GWackClientNetworking(gui,ipField.getText(), Integer.parseInt(portField.getText()), nameField.getText());
-        
-        connected = true; 
-        
     }
 
-    public void showError(String error){
-        SwingUtilities.invokeLater(() ->{
-            JOptionPane.showMessageDialog(this,error,"Error",JOptionPane.ERROR_MESSAGE);
+    public void showError(String error) {
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(this, error, "Error cannot connect to server", JOptionPane.ERROR_MESSAGE);
         });
     }
+
+    
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
