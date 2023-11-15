@@ -15,6 +15,7 @@ public class GWackClientNetworking {
 
     public GWackClientNetworking(GWackClientGUI gui, String host, int port, String username) {
         try {
+            InetAddress.getByName(host);
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -28,9 +29,11 @@ public class GWackClientNetworking {
             out.flush();
 
             new ReadingThread().start();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(gui,"Invalid Port","ERROR",JOptionPane.ERROR_MESSAGE);
-
+         } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(gui,"Invalid Port Number","ERROR",JOptionPane.ERROR_MESSAGE);
+            
+            
         }
     }
 
@@ -41,6 +44,8 @@ public class GWackClientNetworking {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(gui, "Error disconnecting from the server", "Disconnect Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 

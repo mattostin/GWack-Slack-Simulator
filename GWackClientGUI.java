@@ -16,6 +16,7 @@ public class GWackClientGUI extends JFrame {
     private JTextArea composeArea;
     private static GWackClientGUI gui;
     private GWackClientNetworking clientNetworking;
+    private JPanel errorPanel;
 
     private boolean connected = false;
 
@@ -89,6 +90,10 @@ public class GWackClientGUI extends JFrame {
         mainPanel.add(messagesPanel, BorderLayout.CENTER);
         mainPanel.add(composePanel, BorderLayout.SOUTH);
 
+      
+
+        
+
         sendButton.addActionListener((e) -> {
             sendMessage();
         });
@@ -120,8 +125,19 @@ public class GWackClientGUI extends JFrame {
         });
         setVisible(true);
     }
+    
+    public void resetUI() {
+        membersList.setText("");
+        messagesArea.setText("");
+        nameField.setText("");
+        ipField.setText("");
+        portField.setText("");
+        connectButton.setText("Connect");
+        connected = false;
+    }
 
     public void disconnect() {
+        resetUI();
         connectButton.setText("Connect");
         clientNetworking.disconnect();
         connected = false;
@@ -143,16 +159,17 @@ public class GWackClientGUI extends JFrame {
     }
 
     public void connect() {
-        connectButton.setText("Disconnect");
         try{
+        connectButton.setText("Disconnect");
         clientNetworking = new GWackClientNetworking(this, ipField.getText(), Integer.parseInt(portField.getText()),
                 nameField.getText());
+                connected = true;
         }
         catch (Exception e){
-            return;
+            showError("Error connecting to the server, Incorrect IP " );
+            resetUI();
         }
-        connected = true;
-
+        
     }
 
     public void showError(String error) {
